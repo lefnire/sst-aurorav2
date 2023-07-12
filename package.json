@@ -1,0 +1,30 @@
+{
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "deploy:common": "sst deploy --stage commondev",
+    "deploy:staging": "sst deploy --stage staging",
+    "dev": "sst dev",
+    "migrate:generate": "npx drizzle-kit generate:pg --schema packages/db/schemas.ts --out packages/migrations"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.369.0",
+    "@aws-sdk/credential-providers": "^3.369.0",
+    "drizzle-orm": "^0.27.2",
+    "drizzle-zod": "^0.4.4",
+    "postgres": "^3.3.5",
+    "ulid": "^2.3.0",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.119",
+    "aws-cdk-lib": "2.84.0",
+    "constructs": "10.1.156",
+    "drizzle-kit": "^0.19.4",
+    "sst": "2.20.1",
+    "typescript": "^5.1.6"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
