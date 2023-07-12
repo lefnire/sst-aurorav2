@@ -28,3 +28,10 @@ npx sst deploy --stage common
 ```
 
 Now it's $80/m minimum. $40 for prod, $40 for everything else.
+
+## Bastion host
+On local-only you can access your DB the usual way. For RDS DBs (staging, prod, etc) you'll need either (a) SSM (I haven't figured this out yet, could someone chime in?); (b) ClientVPN or (c) Bastion host. ClientVPN is a no-go. It costs $5/day even when turned off, and is freakishly difficult to use. I know from experience. So bastion host it is. To set this up:
+1. Enter your [public IP](https://www.whatsmyip.org/) in `sst.config.ts`. 
+2. Create a keypair in AWS EC2 console. Download for use later. Copy its name in `sst.config.ts`
+3. Ask GPT how to "how do I SSH tunnel with DataGrip" or whatever DB client you use.
+4. When you're done, stop your instance in EC2 console for better security; turn it on again later. In fact, you might want to set `myIp = null` in `sst.config.ts` and re-deploy, to delete the bastion host; you can spin it up again later easily.

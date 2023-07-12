@@ -103,4 +103,36 @@ function Main({app, stack}: sst.StackContext) {
   stack.addOutputs({
     apiHttpUrl: apiHttp.url
   })
+
+
+  // Optional to access any DB in the private subnet, you'll need either a Bastion Host or ClientVPN. I ran
+  // ClientVPN in the wild and it costs $5/d minimum, with it turned off! Wildly expensive; and freakishly hard
+  // to use besides. So use a Bastion Host.
+  const myIp = null
+  if (myIp && vpc) {
+    // You have to create a keypair in console manually, paste its name here
+    const keyName = 'bastionhost'
+
+    // Create a security group in VPC
+    const securityGroup = new aws_ec2.SecurityGroup(stack, 'BastionSG', {
+      vpc,
+      description: 'Allow ssh access to ec2 instances',
+      allowAllOutbound: true
+    });
+
+    // Add an ingress rule to allow SSH from your IP address
+    securityGroup.addIngressRule(aws_ec2.Peer.ipv4(`${myIp}/32`), aws_ec2.Port.tcp(22), 'allow ssh access from my IP');
+
+    const instance = new aws_ec2.Instance(stack, 'Ec2Bastion', {
+      vpc,
+      vpcSubnets: { subnetType: aws_ec2.SubnetType.PUBLIC },
+      instanceType: aws_ec2.InstanceType.of(aws_ec2.InstanceClass.T2, aws_ec2.InstanceSize.MICRO),
+      machineImage: new aws_ec2.AmazonLinuxImage(), // or any other image
+      keyName,
+      securityGroup: securityGroup,
+    });
+
+    // Output the public IP of the bastion host
+    stack.addOutputs({'BastionPublicIp': instance.instancePublicIp })
+  }
 }
