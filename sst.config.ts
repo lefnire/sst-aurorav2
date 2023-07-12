@@ -105,9 +105,7 @@ function Main({app, stack}: sst.StackContext) {
   })
 
 
-  // Optional to access any DB in the private subnet, you'll need either a Bastion Host or ClientVPN. I ran
-  // ClientVPN in the wild and it costs $5/d minimum, with it turned off! Wildly expensive; and freakishly hard
-  // to use besides. So use a Bastion Host.
+  // Optional to access any DB in the private subnet, you'll need either a bastion host. See README
   const myIp = null
   if (myIp && vpc) {
     // You have to create a keypair in console manually, paste its name here
