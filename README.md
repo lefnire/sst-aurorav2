@@ -11,7 +11,7 @@ npm run dev
 Nice & simple. Free.
 
 ## 2. `commondev` - shared b/w all dev envs
-This creates a common stack for all development environments. A single common stack which is shared across everything that's not literally named `prod`. So `staging|dev|test|user1|user2|etc` will all be piggy-backing on the same VPC and Aurora Serverless v2 Cluster. To differentiate between the environments, a separately-named `databaseName` (which is `myapp${stage}` by default) is used. This means you incure a minimum of $40/m for all environments. 
+This creates a common stack for all development environments. A single common stack which is shared across everything that's not literally named `prod`. So `staging|dev|test|user1|user2|etc` will all be piggy-backing on the same VPC and Aurora Serverless v2 Cluster. To differentiate between the environments, a separately-named `dbName` (which is `myapp${stage}` by default) is used. This means you incure a minimum of $40/m for all environments. 
 
 ```bash
 npm run deploy:common
