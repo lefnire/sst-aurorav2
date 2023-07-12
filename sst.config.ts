@@ -71,7 +71,7 @@ function Common({app, stack}: sst.StackContext) {
 }
 
 function Import({app, stack}: sst.StackContext) {
-  if (app.stage === "dev") {
+  if (app.mode === "dev") {
     return {secret: undefined, vpc: undefined}
   }
   const commonStage_ = commonStage(app.stage)
