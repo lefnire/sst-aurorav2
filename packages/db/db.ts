@@ -9,16 +9,16 @@ import * as schema from './schemas'
 export const dbName = process.env.RDS_DB_NAME!
 let connectionString: string
 
-if (process.env.IS_LOCAL) {
+if (process.env.RDS_SECRET_ARN?.length) {
   // In this case make sure you have a local Postgres database running, eg via Docker
-  connectionString = `postgresql://postgres:password@localhost/${dbName}:5432`
-} else {
-  const secretArn = process.env.RDS_SECRET_ARN!
+  const secretArn = process.env.RDS_SECRET_ARN
   const secretsManagerClient = new SecretsManagerClient({ region: process.env.REGION })
   const secretData = await secretsManagerClient.send(new GetSecretValueCommand({ SecretId: secretArn }))
-  const secretValue = JSON.parse(secretData.SecretString);
+  const secretValue = JSON.parse(secretData.SecretString)
   const {username, password, host, port} = secretValue
-  connectionString = `postgresql://${username}:${password}@${host}:${port}/${dbName}`;
+  connectionString = `postgresql://${username}:${password}@${host}:${port}/${dbName}`
+} else {
+  connectionString = `postgresql://postgres:password@localhost/${dbName}:5432`
 }
 
 const dbClient = postgres(connectionString, { max: 1 });

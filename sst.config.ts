@@ -71,6 +71,9 @@ function Common({app, stack}: sst.StackContext) {
 }
 
 function Import({app, stack}: sst.StackContext) {
+  if (app.stage === "dev") {
+    return {secret: undefined, vpc: undefined}
+  }
   const commonStage_ = commonStage(app.stage)
   const vpcId = cdk.Fn.importValue(`CommonStack:VpcId:${commonStage_}`)
   const rdsSecretArn = cdk.Fn.importValue(`CommonStack:SecretArn:${commonStage_}`)
@@ -89,10 +92,10 @@ function Main({app, stack}: sst.StackContext) {
       REGION: app.region,
       IS_LOCAL: app.mode === "dev" ? "true" : "false",
       RDS_DB_NAME: `myapp${app.stage}`,
-      RDS_SECRET_ARN: secret.secretArn,
+      RDS_SECRET_ARN: secret?.secretArn || "",
     }
   })
-  secret.grantRead(fnHttp)
+  secret?.grantRead?.(fnHttp)
   const apiHttp = new sst.Api(stack, "ApiHttp", {
     routes: { "$default": fnHttp }
   })
